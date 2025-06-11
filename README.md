@@ -10,7 +10,7 @@ This repository provides a minimal Telegram bot that uses OpenAI to generate rep
 pip install -r requirements.txt
 ```
 
-2. Set the following environment variables:
+2. Set the following environment variables (you can copy `.env.example` to `.env`):
 
 - `TELEGRAM_BOT_TOKEN` – your Telegram bot token
 - `OPENAI_API_KEY` – OpenAI API key
