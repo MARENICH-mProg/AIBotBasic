@@ -157,7 +157,6 @@ async def message_handler(message: Message, bot: Bot) -> None:
 
             # 3) Асинхронный вызов OpenAI API
             response = client.responses.create(**kwargs)
-            user_states[chat_id]['last_response_id'] = response.id
 
             # Проверяем наличие вызова функции
             is_funny = False
@@ -191,6 +190,7 @@ async def message_handler(message: Message, bot: Bot) -> None:
             kwargs["input"] = input_data
             # Получаем финальный ответ
             response = client.responses.create(**kwargs)
+            user_states[chat_id]['last_response_id'] = response.id
 
             # 4) Извлекаем текст из ответа
             if response.output and len(response.output) > 0:
