@@ -5,7 +5,7 @@ import subprocess
 import sys
 import os
 from admin.main import app as admin_app
-from bot import run as run_bot
+from bot import main as bot_main
 
 def run_admin():
     """Запускает FastAPI админ-сервер"""
@@ -30,7 +30,7 @@ def main():
         if sys.platform != "win32":
             import uvloop
             uvloop.install()
-        run_bot()
+        asyncio.run(bot_main())
     except KeyboardInterrupt:
         print("\nЗавершение работы...")
     finally:
