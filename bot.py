@@ -38,7 +38,11 @@ if not TELEGRAM_TOKEN or not OPENAI_API_KEY:
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Словарь для отслеживания состояния пользователей
-user_states = defaultdict(lambda: {"is_processing": False, "last_response_id": None})
+user_states = defaultdict(lambda: {
+    "is_processing": False,
+    "last_response_id": None,
+    "last_message_time": None,
+})
 
 WELCOME_TEXT = "Привет! Я бот на базе OpenAI. Готов помочь вам!"
 # Замените на корректный file_id вашего стикера из BotFather
@@ -84,6 +88,12 @@ async def message_handler(message: Message, bot: Bot) -> None:
     chat_id = message.chat.id
     user = message.from_user
     user_text = message.text
+
+    now = datetime.utcnow()
+    last_time = user_states[chat_id].get("last_message_time")
+    if last_time and (now - last_time).total_seconds() < 2:
+        await message.answer("Пожалуйста, подождите и отправьте сообщение позже.")
+        return
 
     # Проверяем, не обрабатывается ли уже сообщение от этого пользователя
     if user_states[chat_id]["is_processing"]:
@@ -218,6 +228,7 @@ async def message_handler(message: Message, bot: Bot) -> None:
     
     finally:
         user_states[chat_id]["is_processing"] = False
+        user_states[chat_id]["last_message_time"] = datetime.utcnow()
         logger.info(f"Завершена обработка сообщения от пользователя {user.id}")
 
 async def main() -> None:
