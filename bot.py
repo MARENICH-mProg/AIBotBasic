@@ -13,7 +13,7 @@ from aiogram.client.default import DefaultBotProperties
 from openai import OpenAI
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from admin.database import async_session
+from admin.database import async_session, engine, Base
 from admin.models import User, Message as DBMessage
 
 # --- Настройка логирования ---
@@ -234,6 +234,10 @@ async def message_handler(message: Message, bot: Bot) -> None:
 async def main() -> None:
     """Запускает бота."""
     logger.info("Запуск бота...")
+
+    # Создаем таблицы в базе данных, если они еще не существуют
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
     
     # Инициализация бота с настройками по умолчанию
     bot = Bot(
